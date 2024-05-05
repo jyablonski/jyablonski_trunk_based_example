@@ -1,8 +1,9 @@
 name: Hello World Action
 
 on:
-  pull_request_review:
-    types: [submitted]
+    pull_request:
+    pull_request_review:
+        types: [submitted]
 
 jobs:
   hello_world:
