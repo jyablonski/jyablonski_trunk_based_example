@@ -13,13 +13,14 @@ on:
 
 jobs:
   deploy_to_dev:
+    name: Deploy to Dev
     runs-on: ubuntu-latest
     steps:
       - name: Git clone the repository
         uses: actions/checkout@v3
 
         # simulate some sort of deployment
-      - name: Deploy to Dev Environment
+      - name: "Deploy to ${{ github.event.inputs.dev_environment }}"
         run: |
             echo "Deploying to ${{ github.event.inputs.dev_environment }}"
             touch test_file.md
