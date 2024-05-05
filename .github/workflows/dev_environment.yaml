@@ -1,15 +1,30 @@
-name: Hello World Action
+name: Development Environment Deployment
 
 on:
-    pull_request:
-    pull_request_review:
-        types: [submitted]
+  pull_request_review:
+    types: [submitted, dismissed]
+  workflow_dispatch:  # Manual trigger
 
 jobs:
-  hello_world:
+  deploy_to_dev:
     runs-on: ubuntu-latest
     steps:
-        # simulate some sort of development environment deployment
-        # to test the code changes after a pull request has been approved
-      - name: Say Hello
-        run: echo "Hello, world!  Pull request was approved"
+      - name: Check if Manual Trigger
+        if: github.event_name == 'workflow_dispatch'
+        run: echo "::set-output name=manual::true"
+
+      - name: Determine Deployment Environment
+        id: determine_environment
+        if: github.event_name == 'pull_request_review'
+        run: |
+          if [ "${{ github.event.review.state }}" == "approved" ]; then
+            echo "::set-output name=environment::dev-${{ github.actor }}"
+          else
+            echo "::set-output name=environment::none"
+          fi
+
+      - name: Deploy to Dev Server
+        if: steps.determine_environment.outputs.environment != 'none'
+        run: |
+          echo "Deploying to dev server: ${{ steps.determine_environment.outputs.environment }}"
+          # Add deployment commands here
