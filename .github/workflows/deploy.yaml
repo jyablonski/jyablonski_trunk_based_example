@@ -4,8 +4,8 @@ on:
   push:
     branches:
     - main
-  release:
-    types: [published]  # Trigger when a release is published
+    tags:
+      - '*'  # Trigger on any tag change
 
 env:
   BUCKET_NAME : ${{ secrets.AWS_BUCKET }}
@@ -40,7 +40,7 @@ jobs:
         env:
             aws_bucket: ${{ secrets.AWS_BUCKET }}
         run: |
-            if [ "${{ github.event_name }}" == "release" ]; then
+            if [ "${{ github.ref_type }}" == "tag" ]; then
                 aws s3 cp test_file.md s3://$aws_bucket-prod/
             else
                 aws s3 cp test_file.md s3://$aws_bucket-stg/

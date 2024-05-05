@@ -1,0 +1,14 @@
+name: Hello World Action
+
+on:
+  pull_request_review:
+    types: [submitted]
+
+jobs:
+  hello_world:
+    runs-on: ubuntu-latest
+    steps:
+        # simulate some sort of development environment deployment
+        # to test the code changes after a pull request has been approved
+      - name: Say Hello
+        run: echo "Hello, world!  Pull request was approved"
