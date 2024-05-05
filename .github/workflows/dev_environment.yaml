@@ -3,28 +3,24 @@ name: Development Environment Deployment
 on:
   pull_request_review:
     types: [submitted, dismissed]
-  workflow_dispatch:  # Manual trigger
+  workflow_dispatch:
+    inputs:
+        dev_environment:
+            description: 'Development Environment to deploy to'
+            required: true
+            default: 'dev-1'
+            type: string
 
 jobs:
   deploy_to_dev:
     runs-on: ubuntu-latest
     steps:
-      - name: Check if Manual Trigger
-        if: github.event_name == 'workflow_dispatch'
-        run: echo "::set-output name=manual::true"
+      - name: Git clone the repository
+        uses: actions/checkout@v3
 
-      - name: Determine Deployment Environment
-        id: determine_environment
-        if: github.event_name == 'pull_request_review'
+        # simulate some sort of deployment
+      - name: Deploy to Dev Environment
         run: |
-          if [ "${{ github.event.review.state }}" == "approved" ]; then
-            echo "::set-output name=environment::dev-${{ github.actor }}"
-          else
-            echo "::set-output name=environment::none"
-          fi
-
-      - name: Deploy to Dev Server
-        if: steps.determine_environment.outputs.environment != 'none'
-        run: |
-          echo "Deploying to dev server: ${{ steps.determine_environment.outputs.environment }}"
-          # Add deployment commands here
+            echo "Deploying to ${{ github.event.inputs.dev_environment }}"
+            touch test_file.md
+            echo "Deployed to ${{ github.event.inputs.dev_environment }}"
