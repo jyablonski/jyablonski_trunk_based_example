@@ -1,11 +1,10 @@
 name: Jacob's Trunk Based Development Deployment
 
+# this deploy only runs after tags are pushed, not when prs are merged into main
 on:
   push:
-    branches:
-    - main
     tags:
-      - '*'  # Trigger on any tag change
+      - '*v'  # Trigger on any tag change
 
 env:
   BUCKET_NAME : ${{ secrets.AWS_BUCKET }}
@@ -23,7 +22,13 @@ jobs:
     steps:
       - name: Git clone the repository
         uses: actions/checkout@v3
-    
+      
+      # simulate some sort production deployment
+      # this could be a new docker push to production, or maybe you're promoting the latest staging docker image to production
+
+      # docker pull your-account-id.dkr.ecr.your-region.amazonaws.com/your-repo-name:staging
+      # docker tag your-account-id.dkr.ecr.your-region.amazonaws.com/your-repo-name:staging your-account-id.dkr.ecr.your-region.amazonaws.com/your-repo-name:production
+      # docker push your-account-id.dkr.ecr.your-region.amazonaws.com/your-repo-name:production
       - name: configure aws credentials
         uses: aws-actions/configure-aws-credentials@v1
         with:
